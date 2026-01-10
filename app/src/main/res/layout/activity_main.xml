@@ -1,27 +1,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/bg_gradient"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@drawable/bg_gradient"
+    android:padding="24dp">
 
     <TextView
-        android:text="BINGO GAME"
-        android:textSize="40sp"
+        android:text="🎯 BINGO GAME"
+        android:textSize="35sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="60dp"
+        android:letterSpacing="0.15"
+        android:layout_marginBottom="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnSingle"
         android:text="SINGLE PLAYER"
-        android:textSize="20sp"
+        android:textSize="22sp"
+        android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:background="@drawable/btn_gradient"
-        android:layout_width="260dp"
+        android:elevation="12dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"/>
 
-
+    <Button
+        android:id="@+id/btnOneVsOne"
+        android:text="1 VS 1 PLAYER"
+        android:textSize="22sp"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/btn_gradient"
+        android:elevation="12dp"
+        android:layout_marginTop="32dp"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
