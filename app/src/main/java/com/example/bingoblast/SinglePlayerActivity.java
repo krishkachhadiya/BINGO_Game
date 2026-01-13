@@ -131,6 +131,8 @@ public class SinglePlayerActivity extends AppCompatActivity {
         // Mark player's selected number
         markCell(r, c);
 
+        // Call ONE default number after 0.5s
+        handler.postDelayed(this::callDefaultNumber, 500);
     }
 
     // 🔁 Mark a cell
@@ -144,7 +146,31 @@ public class SinglePlayerActivity extends AppCompatActivity {
         }
     }
 
+    // 🎲 Auto call a default number
+    private void callDefaultNumber() {
+        if (gameWon || numberPool.isEmpty()) return;
 
+        // Find first unmarked number in the pool
+        for (int i = 0; i < numberPool.size(); i++) {
+            int num = numberPool.get(i);
+            boolean markedNumber = false;
+
+            outer:
+            for (int r = 0; r < 5; r++) {
+                for (int c = 0; c < 5; c++) {
+                    if (Integer.parseInt(buttons[r][c].getText().toString()) == num
+                            && !marked[r][c]) {
+                        markCell(r, c);        // mark only ONE cell
+                        numberPool.remove(i);  // remove number from pool
+                        markedNumber = true;
+                        break outer;
+                    }
+                }
+            }
+
+            if (markedNumber) break; // stop after marking one number
+        }
+    }
 
     // 🧠 Check Bingo Lines
     private void checkBingo() {
