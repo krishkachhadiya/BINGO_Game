@@ -52,6 +52,7 @@ public class SinglePlayerActivity extends AppCompatActivity {
         initButtons();
         initNumberPool();
         createBoard();
+        startBackgroundMusic();
     }
 
     // 🔹 Initialize Views
@@ -71,11 +72,12 @@ public class SinglePlayerActivity extends AppCompatActivity {
 
     // 🎮 Buttons Logic
     private void initButtons() {
+        btnRestart.setOnClickListener(v -> restartGame());
 
         btnSound.setOnClickListener(v -> {
             soundOn = !soundOn;
             btnSound.setText(soundOn ? "🔊 Sound ON" : "🔇 Sound OFF");
-
+            toggleBackgroundMusic();
         });
     }
 
@@ -231,7 +233,44 @@ public class SinglePlayerActivity extends AppCompatActivity {
         }
     }
 
+    // 🔄 Restart Game
+    private void restartGame() {
+        totalLines = 0;
+        gameWon = false;
 
+        numberPool.clear();
+        for (int i = 1; i <= 25; i++) numberPool.add(i);
+        Collections.shuffle(numberPool);
+
+        for (int i = 0; i < 12; i++) lineCounted[i] = false;
+        for (int r = 0; r < 5; r++)
+            for (int c = 0; c < 5; c++)
+                marked[r][c] = false;
+
+        txtStatus.setText("Lines: 0 / 5");
+
+        createBoard();
+
+        // Restart background music if sound is on
+        if (soundOn) startBackgroundMusic();
+    }
+
+    // 🔊 Background music
+    private void startBackgroundMusic() {
+        if (bgMusic != null) {
+            if (!bgMusic.isPlaying()) bgMusic.start();
+        }
+    }
+
+    private void toggleBackgroundMusic() {
+        if (bgMusic == null) return;
+
+        if (soundOn) {
+            if (!bgMusic.isPlaying()) bgMusic.start();
+        } else {
+            if (bgMusic.isPlaying()) bgMusic.pause();
+        }
+    }
 
     @Override
     protected void onDestroy() {
