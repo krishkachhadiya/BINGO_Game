@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_game"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- GAME TITLE / TURN -->
+    <TextView
+        android:id="@+id/txtTurn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 1 Turn"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#1A237E"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"/>
+
+    <!-- SCORE ROW -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/txtScoreP1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="P1: 0 / 5"
+            android:textSize="16sp"
+            android:textColor="#2E7D32"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/txtScoreP2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="P2: 0 / 5"
+            android:textSize="16sp"
+            android:textColor="#1565C0"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- WIN TEXT -->
+    <TextView
+        android:id="@+id/txtWin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BINGO!"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="#D32F2F"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"/>
+
+    <!-- GRIDS CONTAINER -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center">
+
+        <GridLayout
+            android:id="@+id/gridP1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="5"
+            android:rowCount="5"
+            android:layout_gravity="center"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true"/>
+
+        <GridLayout
+            android:id="@+id/gridP2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="5"
+            android:rowCount="5"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true"/>
+    </FrameLayout>
+
+
+    <!-- CONTROLS -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnRestart"
+            android:text="🔄 Restart"
+            android:textSize="16sp"
+            android:layout_margin="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnSound"
+            android:text="🔊 Sound ON"
+            android:textSize="16sp"
+            android:layout_margin="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>
