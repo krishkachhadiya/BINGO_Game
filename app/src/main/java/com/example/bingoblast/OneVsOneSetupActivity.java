@@ -67,6 +67,7 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
 
         // Buttons
         btnRestart.setOnClickListener(v -> restartGame());
+        btnSound.setOnClickListener(v -> toggleSound());
 
         // Create grids
         createBoard(gridP1, btnP1, markedP1);
@@ -278,7 +279,16 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
     }
 
     // ================= SOUND TOGGLE =================
+    private void toggleSound() {
+        isSoundOn = !isSoundOn;
+        btnSound.setText(isSoundOn ? "🔊 Sound ON" : "🔇 Sound OFF");
 
+        if (isSoundOn) {
+            if (!bgMusic.isPlaying()) bgMusic.start();
+        } else {
+            if (bgMusic.isPlaying()) bgMusic.pause();
+        }
+    }
 
     @Override
     protected void onDestroy() {
