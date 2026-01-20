@@ -23,7 +23,8 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
     TextView txtTurn, txtScoreP1, txtScoreP2, txtWin;
     Button btnRestart, btnSound;
 
-    // Grids and marking
+
+    // Grids
     Button[][] btnP1 = new Button[5][5];
     Button[][] btnP2 = new Button[5][5];
 
@@ -42,10 +43,13 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
     boolean isSoundOn = true;
     MediaPlayer bgMusic, winSound;
 
+    // Animations (OPTION 4)
+    Animation fadeIn, fadeOut;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_two_player); // your XML layout
+        setContentView(R.layout.activity_two_player);
 
         // Bind UI
         gridP1 = findViewById(R.id.gridP1);
@@ -57,23 +61,24 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
         btnRestart = findViewById(R.id.btnRestart);
         btnSound = findViewById(R.id.btnSound);
 
-        // Background music
+        // Load animations (OPTION 4)
+        fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+
+        // Sounds
         bgMusic = MediaPlayer.create(this, R.raw.bg_music);
         bgMusic.setLooping(true);
         bgMusic.start();
 
-        // Winning sound
         winSound = MediaPlayer.create(this, R.raw.wining_sound);
 
-        // Buttons
         btnRestart.setOnClickListener(v -> restartGame());
         btnSound.setOnClickListener(v -> toggleSound());
 
-        // Create grids
         createBoard(gridP1, btnP1, markedP1);
         createBoard(gridP2, btnP2, markedP2);
-        gridP2.setVisibility(View.GONE);
 
+        gridP2.setVisibility(View.GONE);
         updateTurnUI();
     }
 
@@ -92,17 +97,16 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
             for (int c = 0; c < 5; c++) {
                 Button btn = new Button(this);
                 btn.setText(String.valueOf(numbers.get(index++)));
-                btn.setTextSize(16);
                 btn.setTextColor(Color.BLACK);
-                btn.setBackgroundResource(R.drawable.bingo_tile); // same as single player
+                btn.setTextSize(16);
+                btn.setBackgroundResource(R.drawable.bingo_tile);
 
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = size;
                 params.height = size;
-                params.setMargins(6,6,6,6);
+                params.setMargins(6, 6, 6, 6);
                 btn.setLayoutParams(params);
 
-                int finalR = r, finalC = c;
                 btn.setOnClickListener(v -> {
                     if (gameOver) return;
 
@@ -117,19 +121,18 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
 
                 btns[r][c] = btn;
                 marked[r][c] = false;
-
                 grid.addView(btn);
             }
         }
     }
 
-    // ================= MARK NUMBERS =================
+    // ================= MARK =================
     private void markNumberForBoth(int number) {
-        markInGrid(number, btnP1, markedP1);
-        markInGrid(number, btnP2, markedP2);
+        mark(number, btnP1, markedP1);
+        mark(number, btnP2, markedP2);
     }
 
-    private void markInGrid(int number, Button[][] btns, boolean[][] marked) {
+    private void mark(int number, Button[][] btns, boolean[][] marked) {
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
                 if (btns[r][c].getText().toString().equals(String.valueOf(number)) && !marked[r][c]) {
@@ -141,7 +144,7 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
         }
     }
 
-    // ================= SWITCH TURN =================
+    // ================= TURN SWITCH (OPTION 4) =================
     private void switchTurn() {
         isPlayerOneTurn = !isPlayerOneTurn;
         updateTurnUI();
@@ -152,12 +155,21 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
 
         if (isPlayerOneTurn) {
             txtTurn.setText("Player 1 Turn");
-            gridP1.setVisibility(View.VISIBLE);
+
+            gridP2.startAnimation(fadeOut);
             gridP2.setVisibility(View.GONE);
+
+            gridP1.setVisibility(View.VISIBLE);
+            gridP1.startAnimation(fadeIn);
+
         } else {
             txtTurn.setText("Player 2 Turn");
+
+            gridP1.startAnimation(fadeOut);
             gridP1.setVisibility(View.GONE);
+
             gridP2.setVisibility(View.VISIBLE);
+            gridP2.startAnimation(fadeIn);
         }
     }
 
@@ -166,10 +178,8 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
         boolean[][] marked = isP1 ? markedP1 : markedP2;
         boolean[] lines = isP1 ? linesP1 : linesP2;
 
-        int idx = 0;
-        int total = 0;
+        int idx = 0, total = 0;
 
-        // Rows
         for (int r = 0; r < 5; r++) {
             boolean ok = true;
             for (int c = 0; c < 5; c++) ok &= marked[r][c];
@@ -177,7 +187,6 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
             idx++;
         }
 
-        // Columns
         for (int c = 0; c < 5; c++) {
             boolean ok = true;
             for (int r = 0; r < 5; r++) ok &= marked[r][c];
@@ -185,7 +194,6 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
             idx++;
         }
 
-        // Diagonals
         boolean ok = true;
         for (int i = 0; i < 5; i++) ok &= marked[i][i];
         if (ok && !lines[idx]) lines[idx] = true;
@@ -211,92 +219,35 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
     // ================= WIN =================
     private void declareWinner(String player) {
         if (gameOver) return;
-
         gameOver = true;
 
         txtTurn.setText(player + " WINS");
         txtWin.setVisibility(View.VISIBLE);
         txtWin.setText("🎉 B I N G O 🎉");
 
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.win_anim);
-        txtWin.startAnimation(anim);
+        txtWin.startAnimation(AnimationUtils.loadAnimation(this, R.anim.win_anim));
+        if (isSoundOn) winSound.start();
 
-        if (isSoundOn && winSound != null && !winSound.isPlaying()) winSound.start();
-
-        // Show both grids
         gridP1.setVisibility(View.VISIBLE);
         gridP2.setVisibility(View.VISIBLE);
-
-        disableGrid(btnP1);
-        disableGrid(btnP2);
-    }
-
-    private void disableGrid(Button[][] buttons) {
-        for (int r = 0; r < 5; r++)
-            for (int c = 0; c < 5; c++)
-                buttons[r][c].setEnabled(false);
     }
 
     // ================= RESTART =================
     private void restartGame() {
-        txtWin.clearAnimation();
-        txtWin.setVisibility(View.GONE);
-
-        gameOver = false;
-        isPlayerOneTurn = true;
-        scoreP1 = 0;
-        scoreP2 = 0;
-        txtScoreP1.setText("P1: 0 / 5");
-        txtScoreP2.setText("P2: 0 / 5");
-        txtTurn.setText("Player 1 Turn");
-
-        for (int i = 0; i < 12; i++) {
-            linesP1[i] = false;
-            linesP2[i] = false;
-        }
-
-        for (int r = 0; r < 5; r++) {
-            for (int c = 0; c < 5; c++) {
-                markedP1[r][c] = false;
-                markedP2[r][c] = false;
-            }
-        }
-
-        if (winSound != null) {
-            if (winSound.isPlaying()) winSound.stop();
-            winSound.release();
-            winSound = MediaPlayer.create(this, R.raw.wining_sound);
-        }
-
-        gridP1.removeAllViews();
-        gridP2.removeAllViews();
-
-        createBoard(gridP1, btnP1, markedP1);
-        createBoard(gridP2, btnP2, markedP2);
-
-        gridP1.setVisibility(View.VISIBLE);
-        gridP2.setVisibility(View.GONE);
+        recreate();
     }
 
-    // ================= SOUND TOGGLE =================
+    // ================= SOUND =================
     private void toggleSound() {
         isSoundOn = !isSoundOn;
-        btnSound.setText(isSoundOn ? "🔊 Sound ON" : "🔇 Sound OFF");
-
-        if (isSoundOn) {
-            if (!bgMusic.isPlaying()) bgMusic.start();
-        } else {
-            if (bgMusic.isPlaying()) bgMusic.pause();
-        }
+        if (isSoundOn) bgMusic.start();
+        else bgMusic.pause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (bgMusic != null) bgMusic.release();
         if (winSound != null) winSound.release();
-        if (bgMusic != null) {
-            if (bgMusic.isPlaying()) bgMusic.stop();
-            bgMusic.release();
-        }
     }
 }
