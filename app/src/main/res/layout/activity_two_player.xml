@@ -115,6 +115,15 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btnPower"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="⚡ Power (1x)"
+            android:textSize="14sp"
+            android:layout_margin="8dp"/>
+
     </LinearLayout>
 
 </LinearLayout>
