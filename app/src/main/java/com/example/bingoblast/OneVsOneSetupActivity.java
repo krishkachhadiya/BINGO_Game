@@ -21,8 +21,13 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
     // UI
     GridLayout gridP1, gridP2;
     TextView txtTurn, txtScoreP1, txtScoreP2, txtWin;
-    Button btnRestart, btnSound;
+    Button btnRestart, btnSound, btnPower;
 
+    // Power Move (OPTION 5)
+    boolean powerP1Used = false;
+    boolean powerP2Used = false;
+    boolean powerActive = false;
+    int powerClickCount = 0;
 
     // Grids
     Button[][] btnP1 = new Button[5][5];
@@ -60,8 +65,9 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
         txtWin = findViewById(R.id.txtWin);
         btnRestart = findViewById(R.id.btnRestart);
         btnSound = findViewById(R.id.btnSound);
+        btnPower = findViewById(R.id.btnPower);
 
-        // Load animations (OPTION 4)
+        // Animations
         fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
@@ -72,14 +78,34 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
 
         winSound = MediaPlayer.create(this, R.raw.wining_sound);
 
+        // Buttons
         btnRestart.setOnClickListener(v -> restartGame());
         btnSound.setOnClickListener(v -> toggleSound());
 
+        btnPower.setOnClickListener(v -> activatePower());
+
+        // Create boards
         createBoard(gridP1, btnP1, markedP1);
         createBoard(gridP2, btnP2, markedP2);
 
         gridP2.setVisibility(View.GONE);
         updateTurnUI();
+    }
+
+    // ================= POWER MOVE =================
+    private void activatePower() {
+        if (gameOver) return;
+
+        if (isPlayerOneTurn && !powerP1Used) {
+            powerActive = true;
+        } else if (!isPlayerOneTurn && !powerP2Used) {
+            powerActive = true;
+        }
+
+        if (powerActive) {
+            powerClickCount = 0;
+            btnPower.setText("⚡ Select 2 Numbers");
+        }
     }
 
     // ================= CREATE BOARD =================
@@ -107,22 +133,41 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
                 params.setMargins(6, 6, 6, 6);
                 btn.setLayoutParams(params);
 
-                btn.setOnClickListener(v -> {
-                    if (gameOver) return;
-
-                    int number = Integer.parseInt(btn.getText().toString());
-                    markNumberForBoth(number);
-
-                    checkBingo(true);
-                    checkBingo(false);
-
-                    switchTurn();
-                });
+                btn.setOnClickListener(v -> handleCellClick(btn));
 
                 btns[r][c] = btn;
                 marked[r][c] = false;
                 grid.addView(btn);
             }
+        }
+    }
+
+    // ================= CELL CLICK =================
+    private void handleCellClick(Button btn) {
+        if (gameOver) return;
+
+        int number = Integer.parseInt(btn.getText().toString());
+        markNumberForBoth(number);
+
+        checkBingo(true);
+        checkBingo(false);
+
+        if (powerActive) {
+            powerClickCount++;
+
+            if (powerClickCount == 2) {
+                powerActive = false;
+
+                if (isPlayerOneTurn) powerP1Used = true;
+                else powerP2Used = true;
+
+                btnPower.setText("⚡ Used");
+                btnPower.setEnabled(false);
+
+                switchTurn();
+            }
+        } else {
+            switchTurn();
         }
     }
 
@@ -144,7 +189,7 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
         }
     }
 
-    // ================= TURN SWITCH (OPTION 4) =================
+    // ================= TURN SWITCH =================
     private void switchTurn() {
         isPlayerOneTurn = !isPlayerOneTurn;
         updateTurnUI();
@@ -155,19 +200,12 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
 
         if (isPlayerOneTurn) {
             txtTurn.setText("Player 1 Turn");
-
-            gridP2.startAnimation(fadeOut);
             gridP2.setVisibility(View.GONE);
-
             gridP1.setVisibility(View.VISIBLE);
             gridP1.startAnimation(fadeIn);
-
         } else {
             txtTurn.setText("Player 2 Turn");
-
-            gridP1.startAnimation(fadeOut);
             gridP1.setVisibility(View.GONE);
-
             gridP2.setVisibility(View.VISIBLE);
             gridP2.startAnimation(fadeIn);
         }
@@ -183,25 +221,24 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
         for (int r = 0; r < 5; r++) {
             boolean ok = true;
             for (int c = 0; c < 5; c++) ok &= marked[r][c];
-            if (ok && !lines[idx]) lines[idx] = true;
+            if (ok) lines[idx] = true;
             idx++;
         }
 
         for (int c = 0; c < 5; c++) {
             boolean ok = true;
             for (int r = 0; r < 5; r++) ok &= marked[r][c];
-            if (ok && !lines[idx]) lines[idx] = true;
+            if (ok) lines[idx] = true;
             idx++;
         }
 
         boolean ok = true;
         for (int i = 0; i < 5; i++) ok &= marked[i][i];
-        if (ok && !lines[idx]) lines[idx] = true;
-        idx++;
+        if (ok) lines[idx++] = true;
 
         ok = true;
         for (int i = 0; i < 5; i++) ok &= marked[i][4 - i];
-        if (ok && !lines[idx]) lines[idx] = true;
+        if (ok) lines[idx] = true;
 
         for (boolean b : lines) if (b) total++;
 
@@ -222,10 +259,10 @@ public class OneVsOneSetupActivity extends AppCompatActivity {
         gameOver = true;
 
         txtTurn.setText(player + " WINS");
-        txtWin.setVisibility(View.VISIBLE);
         txtWin.setText("🎉 B I N G O 🎉");
-
+        txtWin.setVisibility(View.VISIBLE);
         txtWin.startAnimation(AnimationUtils.loadAnimation(this, R.anim.win_anim));
+
         if (isSoundOn) winSound.start();
 
         gridP1.setVisibility(View.VISIBLE);
