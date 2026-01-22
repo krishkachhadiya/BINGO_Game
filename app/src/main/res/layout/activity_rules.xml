@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_game"
+    android:padding="16dp">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bingo Blast Rules"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#1A237E"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Rules -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtTitle"
+        android:layout_marginTop="16dp"
+        android:layout_above="@id/btnBack">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#000"
+            android:lineSpacingExtra="8dp"
+            android:text="🎮 GAME RULES\n\n
+1. Bingo Blast is a turn-based 1 vs 1 game.\n
+2. Each player selects only ONE number per turn.\n
+3. The selected number is marked on BOTH player grids.\n
+4. A number once selected cannot be chosen again.\n
+5. Players play alternately until a winner is decided.\n\n
+⭐ POWER RULE\n\n
+• Each player gets ONE special power per match.\n
+• Power can be used only ONCE.\n
+• Power gives a temporary advantage.\n\n
+🏆 WINNING RULES\n\n
+• A line can be horizontal, vertical, or diagonal.\n
+• Completing 5 lines forms B I N G O.\n
+• First player to complete BINGO wins the match.\n\n
+🔊 CONTROLS\n\n
+• Sound can be turned ON or OFF.\n
+• Restart button resets the entire game.\n\n
+Enjoy playing Bingo Blast! 🎉"/>
+
+    </ScrollView>
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
