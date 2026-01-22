@@ -17,9 +17,14 @@
         <activity
             android:name=".OneVsOneSetupActivity"
             android:exported="false" />
+
+        <activity android:name=".RulesActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
