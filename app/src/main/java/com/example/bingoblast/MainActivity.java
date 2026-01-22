@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnSingle, btnOneVsOne;
+    Button btnSingle, btnOneVsOne,btnRules;
     private MediaPlayer bgMusic;
     private boolean soundOn = true; // default ON
 
@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         // 🔹 Find buttons
         btnSingle = findViewById(R.id.btnSingle);
         btnOneVsOne = findViewById(R.id.btnOneVsOne);
+        Button btnRules = findViewById(R.id.btnRules);
+
 
         // 🔊 Initialize background music
         bgMusic = MediaPlayer.create(this, R.raw.bg_music); // your bg music file
@@ -37,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, OneVsOneSetupActivity.class);
             startActivity(i);
         });
+
+        btnRules.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RulesActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     @Override
