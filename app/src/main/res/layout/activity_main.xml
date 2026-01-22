@@ -6,6 +6,15 @@
     android:background="@drawable/bg_gradient"
     android:padding="24dp">
 
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="280dp"
+        android:layout_height="120dp"
+        android:src="@drawable/clg_logo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:scaleType="fitCenter"/>
     <TextView
         android:text="🎯 BINGO GAME"
         android:textSize="35sp"
@@ -38,4 +47,16 @@
         android:layout_marginTop="32dp"
         android:layout_width="280dp"
         android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/btnRules"
+        android:text="Rules"
+        android:textSize="22sp"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/btn_gradient"
+        android:elevation="12dp"
+        android:layout_marginTop="32dp"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
